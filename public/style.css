@@ -1,0 +1,422 @@
+/* =================================================================== */
+/* 1. GLOBAL STYLES & THEME VARIABLES
+/* =================================================================== */
+
+:root {
+  --font-family: 'Poppins', sans-serif;
+  --primary-color: #3a66b5;
+  --primary-hover-color: #2c5291;
+  --success-color: #28a745;
+  --error-color: #dc3545;
+  --warning-color: #ffc107;
+  
+  --bg-color: #f8f9fa;
+  --surface-color: #ffffff;
+  --border-color: #e9ecef;
+
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  
+  --border-radius: 12px;
+  --box-shadow: 0 4px 25px rgba(0, 0, 0, 0.07);
+  --transition-speed: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: #f5f5f5;
+  color: #333;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+}
+
+h1, h2, h3 {
+  color: var(--primary-color);
+  margin-top: 0;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+p {
+  color: var(--light-text-color);
+}
+
+button {
+  border: none;
+  border-radius: 5px;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* =================================================================== */
+/* 2. AUTHENTICATION SCREEN
+/* =================================================================== */
+
+.auth-container {
+  max-width: 450px;
+  margin: 50px auto;
+  padding: 40px;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: #fff;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.auth-form input {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.auth-form button {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.auth-form button:hover {
+  background-color: var(--primary-hover-color);
+}
+
+/* =================================================================== */
+/* 3. START SCREEN & MAIN BUTTONS
+/* =================================================================== */
+
+.start-screen {
+  text-align: center;
+}
+
+.start-button, .restart-button, .submit-button {
+  background-color: var(--primary-color);
+  color: white;
+  margin: 20px auto;
+  display: block;
+}
+.start-button:hover, .restart-button:hover, .submit-button:hover {
+  background-color: var(--primary-hover-color);
+}
+
+
+.secondary-button:hover {
+    background-color: #555;
+}
+
+#logout-button {
+    background-color: var(--error-color);
+    color: white;
+    margin-top: 10px;
+}
+
+/* =================================================================== */
+/* 4. EXAM SCREEN
+/* =================================================================== */
+
+.exam-screen {
+  display: block;
+}
+
+.timer-container { text-align: center; margin-bottom: 20px; padding: 15px; background-color: var(--bg-color); border-radius: var(--border-radius); }
+
+.timer { font-size: 24px; font-weight: 600; color: var(--primary-color); }
+
+.timer.warning { color: #fd7e14; }
+
+.timer.critical { color: var(--error-color); animation: pulse 1s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+.question-nav {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px 0;
+  margin-bottom: 20px;
+  gap: 6px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.question-nav button {
+  width: 36px; height: 36px; padding: 0; font-size: 0.9em; line-height: 34px; border-radius: 50%;
+  background-color: var(--bg-color); color: var(--text-secondary); border: 1px solid var(--border-color);
+  transition: all var(--transition-speed);
+}
+.question-nav button.current {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+  font-weight: bold;
+}
+.question-nav button.answered {
+  background-color: #e3f2fd;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+.question-nav button.flagged {
+  background-color: var(--warning-color);
+  color: white;
+  border-color: var(--warning-color);
+}
+
+.question {
+  margin-bottom: 30px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: var(--light--color);
+}
+
+.topic-indicator {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  display: inline-block;
+}
+
+.options {
+  list-style: none;
+  padding: 0;
+}
+.options li {
+  margin: 10px 0; padding: 15px; background-color: var(--surface-color); border: 1px solid var(--border-color);
+  border-radius: 8px; cursor: pointer; transition: all var(--transition-speed); display: flex; align-items: center;
+}
+.options li:hover { border-color: var(--primary-color); background-color: #f7f9fc; }
+
+.options li.selected {
+  border-color: var(--primary-color); background-color: #eef2ff; color: var(--primary-color);
+  font-weight: 500; box-shadow: 0 0 0 2px rgba(58, 102, 181, 0.2);
+}
+
+.navigation {
+  text-align: center;
+  margin: 30px 0;
+}
+.nav-button {
+  border: none;
+  border-radius: 8px;
+  padding: 12px 28px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-speed);
+  text-decoration: none;
+  display: inline-block;
+}
+.nav-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background-color: var(--primary-hover-color);
+  color: white;
+}
+.nav-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.flag-button {
+    margin-top: 15px;
+    background-color: #78909c;
+    color: white;
+    padding: 8px 12px;
+}
+.flag-button.marked {
+    background-color: var(--warning-color);
+}
+
+/* =================================================================== */
+/* 5. RESULTS SCREEN
+/* =================================================================== */
+
+.results-screen {
+  text-align: center;
+}
+
+.score {
+  font-size: 48px;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin: 20px 0;
+}
+
+.results-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin: 30px 0;
+  align-items: start;
+}
+
+.topic-analysis {
+  background-color: var(--light-bg-color);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  text-align: left;
+}
+.topic-analysis h3 {
+  text-align: center;
+}
+.topic-stats {
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border-left-width: 4px;
+  border-left-style: solid;
+}
+.topic-stats.needs-improvement {
+  border-left-color: var(--error-color);
+  background-color: #ffeaea;
+}
+.topic-stats.good {
+  border-left-color: var(--success-color);
+  background-color: #eafaf1;
+}
+
+.chart-container {
+  background-color: var(--light-bg-color);
+  padding: 20px;
+  border-radius: var(--border-radius);
+}
+
+.result-details {
+  margin: 20px 0;
+  text-align: left;
+  display: none; /* JS controls visibility */
+}
+
+.question-review {
+  margin: 15px 0;
+  padding: 15px;
+  border-radius: 5px;
+  border-left-width: 4px;
+  border-left-style: solid;
+}
+.question-review.correct {
+  background-color: #e8f5e9;
+  border-left-color: var(--success-color);
+}
+.question-review.incorrect {
+  background-color: #fde8e8;
+  border-left-color: var(--error-color);
+}
+.question-review strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* =================================================================== */
+/* 6. HISTORY SCREEN
+/* =================================================================== */
+#history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+.history-item {
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    align-items: center;
+    border-left-width: 5px;
+    border-left-style: solid;
+}
+.history-item.good {
+    border-left-color: var(--success-color);
+}
+.history-item.needs-improvement {
+    border-left-color: var(--error-color);
+}
+.history-item p {
+    margin: 0;
+    color: #333;
+}
+.history-item .score {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+.details-button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 8px 16px;
+    font-size: 14px;
+    justify-self: end;
+}
+
+/* =================================================================== */
+/* 7. SOURCE SELECTION SCREEN
+/* =================================================================== */
+
+.source-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 30px auto;
+    max-width: 400px;
+}
+
+.source-select-button {
+    background-color: #fff;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    padding: 15px;
+    font-size: 1.1em;
+    text-align: center;
+    border-radius: var(--border-radius);
+}
+
+.source-select-button:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+
+/* =================================================================== */
+/* 8. MEDIA QUERIES FOR RESPONSIVENESS
+/* =================================================================== */
+
+@media (max-width: 768px) {
+  .results-summary {
+    grid-template-columns: 1fr;
+  }
+  .container {
+    padding: 20px;
+  }
+  .auth-container {
+    margin: 20px;
+    padding: 20px;
+  }
+  .history-item {
+      grid-template-columns: 1fr;
+      justify-items: start;
+  }
+  .details-button {
+      justify-self: start;
+  }
+}

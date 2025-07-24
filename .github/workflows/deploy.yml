@@ -1,0 +1,48 @@
+# .github/workflows/deploy.yml
+
+name: Deploy to GitHub Pages
+
+# Roda este workflow toda vez que um push é feito para a branch 'main'
+on:
+  push:
+    branches: [ main ]
+  # Permite que você rode este workflow manualmente da aba Actions
+  workflow_dispatch:
+
+# Permissões para o GITHUB_TOKEN para permitir o deploy no GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Baixa o código do seu repositório
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Injeta as chaves do Supabase nos arquivos
+      - name: Replace Supabase Keys
+        run: |
+          # Procura e substitui os placeholders no app.js
+          # O 'sed' é um utilitário de linha de comando para encontrar e substituir texto
+          sed -i 's|__SUPABASE_URL__|${{ secrets.SUPABASE_URL }}|g' public/app.js
+          sed -i 's|__SUPABASE_ANON_KEY__|${{ secrets.SUPABASE_ANON_KEY }}|g' public/app.js
+
+      # 3. Configura o GitHub Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      # 4. Faz o upload dos arquivos do site (artefato)
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Faz o upload do conteúdo da pasta 'public'
+          path: './public'
+
+      # 5. Faz o deploy do artefato no GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

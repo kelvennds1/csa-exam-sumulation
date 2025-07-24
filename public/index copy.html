@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ServiceNow CSA Exam Practice</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+
+    <div id="app">
+        <div class="container" style="text-align: center;"><h1>Loading...</h1></div>
+    </div>
+
+    <template id="auth-template">
+        <div class="auth-container">
+            <h1>ServiceNow CSA Quiz</h1>
+            <p>Log in or sign up to save your progress.</p>
+            
+            <form id="login-form" class="auth-form">
+                <h3>Login</h3>
+                <input type="email" name="email" placeholder="Your email" required>
+                <input type="password" name="password" placeholder="Your password" required>
+                <button type="submit">Log In</button>
+            </form>
+            
+            <hr style="margin: 30px 0; border: 1px solid #f0f0f0;">
+
+            <form id="register-form" class="auth-form">
+                <h3>Create Account</h3>
+                <input type="email" name="email" placeholder="Your email" required>
+                <input type="password" name="password" placeholder="Create a password" required>
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+    </template>
+
+    <template id="start-screen-template">
+        <div class="container start-screen">
+            <h1>ServiceNow CSA Certification Practice Exam</h1>
+            <p>This practice exam contains questions following the official CSA exam distribution.</p>
+            <ul style="text-align: left; max-width: 600px; margin: 20px auto; list-style-position: inside;">
+              <li><strong>Platform Overview and Navigation:</strong> 6%</li>
+              <li><strong>Instance Configuration:</strong> 10%</li>
+              <li><strong>Configuring Applications for Collaboration:</strong> 19.5%</li>
+              <li><strong>Self Service & Automation:</strong> 19.5%</li>
+              <li><strong>Database Management and Platform Security:</strong> 30%</li>
+              <li><strong>Data Migration and Integration:</strong> 15%</li>
+            </ul>
+            <p><strong>Time Limit:</strong> 90 minutes. Good luck!</p>
+            <button class="start-button" onclick="router('source-select')">Start Exam</button>
+            <button id="history-button" class="secondary-button" onclick="router('hit')">View My History</button>
+            <button id="logout-button" onclick="handleLogout()")>Log Out</button>
+        </div>
+    </template>
+
+    <template id="source-select-template">
+        <div class="container">
+            <h1>Choose Question Source</h1>
+            <p>Select a specific source file or take an exam with questions from all sources.</p>
+            <div id="source-list" class="source-list-container"></div>
+            <button class="secondary-button" onclick="router('start')" style="margin-top: 20px;">Back</button>
+        </div>
+    </template>
+
+    <template id="exam-screen-template">
+        <div class="container exam-screen">
+            <a href="" style="text-decoration: none;"><h1>ServiceNow CSA Practice Exam</h1></a>
+            <div class="timer-container">
+                <div>Time Remaining:</div>
+                <div class="timer" id="timer">90:00</div>
+            </div>
+            <div class="question-counter" id="questionCounter"></div>
+            <div id="questionNavigator" class="question-nav"></div>
+            <div id="questionContainer"></div>
+            <div class="navigation">
+                <button class="nav-button" id="prevButton" onclick="previousQuestion()" disabled>Previous</button>
+                <button class="nav-button" id="nextButton" onclick="nextQuestion()">Next</button>
+            </div>
+            <button class="submit-button" id="submitButton" onclick="submitExam()" style="display: none;">Submit Exam</button>
+        </div>
+    </template>
+
+    <template id="results-screen-template">
+        <div class="container results-screen">
+            <h1>Exam Result</h1>
+            <div class="score" id="scoreDisplay"></div>
+            <div id="resultMessage"></div>
+            <div class="results-summary">
+                <div class="topic-analysis">
+                    <h3>Performance by Topic</h3>
+                    <div id="topicStats"></div>
+                </div>
+                <div class="chart-container">
+                    <h3>Errors by Topic</h3>
+                    <canvas id="errorChart"></canvas>
+                </div>
+            </div>
+            <button id="toggle-details-button" class="secondary-button" onclick="toggleDetails()">Show Question Details</button>
+            <div class="result-details" id="resultDetails"></div>
+            <button class="restart-button" onclick="router('start')">Back to Home</button>
+        </div>
+    </template>
+
+    <template id="history-screen-template">
+        <div class="container">
+            <h1>My Exam History</h1>
+            <div id="history-list">
+                <p>Loading your history...</p>
+            </div>
+            <button class="restart-button" onclick="router('start')">Back to Home</button>
+        </div>
+    </template>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>
