@@ -1,18 +1,10 @@
-// =================================================================
-// 1. INITIALIZATION & CONFIGURATION
-// =================================================================
-
 const SUPABASE_URL = "__SUPABASE_URL__";
 const SUPABASE_ANON_KEY = "__SUPABASE_ANON_KEY__";
 
-// The CDN script creates a global 'supabase' object. We use it to call createClient().
-// The result (our client) is stored in a new variable with a different name to avoid conflicts.
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Main application element where views will be rendered
 const app = document.getElementById("app");
 
-// Global application state variables
 let currentUser = null;
 let allQuestions = [];
 let currentQuestions = [];
@@ -25,12 +17,8 @@ let timeRemaining = 5400;
 let flaggedQuestions = new Set();
 
 
-// =================================================================
-// 2. ROUTING & SCREEN RENDERING LOGIC
-// =================================================================
 
 /**
- * Controls the display of application screens (views).
  * @param {string} routeName - The name of the screen to display.
  * @param {object} [data=null] - Optional data to pass to the screen (e.g., result data).
  */
@@ -82,9 +70,6 @@ function router(routeName, data = null) {
   }
 }
 
-// =================================================================
-// 3. AUTHENTICATION LOGIC (SUPABASE AUTH)
-// =================================================================
 
 async function handleLogin(event) {
   event.preventDefault();
@@ -122,9 +107,6 @@ async function handleLogout() {
   router("auth");
 }
 
-/**
- * Checks the user's session on page load to direct them correctly.
- */
 async function checkSession() {
   const { data } = await supabaseClient.auth.getSession();
   if (data.session) {
@@ -135,9 +117,6 @@ async function checkSession() {
   }
 }
 
-// =================================================================
-// 4. QUIZ LOGIC
-// =================================================================
 
 const topics = {
   platform_overview: "Platform Overview and Navigation",
@@ -215,12 +194,10 @@ function getRandomQuestions(totalQuestions, sourceFilter = "Random") {
   const totalAvailable = questionPool.length;
   const questionsToSelect = Math.min(totalQuestions, totalAvailable);
 
-  // If the source is not random, we will not use topic distribution, we will take all questions from that source.
   if (sourceFilter !== 'Random') {
       return [...questionPool].sort(() => 0.5 - Math.random());
   }
 
-  // --- Topic distribution logic only for 'Random' mode ---
   const questionsByTopicCount = getQuestionsByTopicDistribution(questionsToSelect);
   let selectedQuestions = [];
   const questionsByTopic = {};
@@ -243,12 +220,10 @@ function getRandomQuestions(totalQuestions, sourceFilter = "Random") {
 function startExam(source = 'Random') {
     currentExamSource = source;
     
-    // First, render the exam screen template
     router('exam'); 
     
-    // Use a short timeout to ensure the DOM is updated before we try to access its elements
     setTimeout(() => {
-        const questionCount = (source === 'Random') ? 60 : 1000; // Get 60 for random, or up to 1000 for a specific source
+        const questionCount = (source === 'Random') ? 60 : 1000; 
         currentQuestions = getRandomQuestions(questionCount, source); 
         
         if (currentQuestions.length === 0) {
@@ -260,7 +235,7 @@ function startExam(source = 'Random') {
         currentQuestionIndex = 0;
         userAnswers = {};
         flaggedQuestions.clear();
-        timeRemaining = 5400; // 90 min
+        timeRemaining = 5400; 
         displayQuestion();
         startTimer();
     }, 0);
@@ -473,10 +448,6 @@ function updateTimerDisplay() {
   }
 }
 
-// =================================================================
-// 5. DATA PERSISTENCE & HISTORY (SUPABASE DB)
-// =================================================================
-
 async function saveResult(resultData) {
   if (!currentUser) {
     alert("You must be logged in to save your result.");
@@ -626,10 +597,6 @@ function generateErrorChart(topicResults) {
   });
 }
 
-
-// =================================================================
-// 6. APPLICATION INITIALIZATION
-// =================================================================
 
 document.addEventListener("DOMContentLoaded", async () => {
   await loadAllQuestions();
