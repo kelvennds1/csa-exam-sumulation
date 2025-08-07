@@ -650,6 +650,6 @@ function generateErrorChart(topicResults) {
 
 
 document.addEventListener("DOMContentLoaded", async () => {
-  await loadallOriginalQuestions();
+  await loadAllQuestions();
   checkSession();
 });
