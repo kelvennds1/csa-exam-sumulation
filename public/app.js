@@ -6,7 +6,8 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const app = document.getElementById("app");
 
 let currentUser = null;
-let allQuestions = [];
+let allOriginalQuestions = [];
+let allRandomModeQuestions = [];
 let currentQuestions = [];
 let currentQuestionIndex = 0;
 let userAnswers = {};
@@ -127,6 +128,11 @@ const topics = {
   migration_integration: "Data Migration and Integration",
 };
 
+const topicNameToKeyMap = Object.entries(topics).reduce((acc, [key, value]) => {
+    acc[value.toLowerCase()] = key;
+    return acc;
+}, {});
+
 const topicDistribution = {
   platform_overview: 6,
   instance_config: 10,
@@ -137,7 +143,18 @@ const topicDistribution = {
 };
 
 async function loadAllQuestions() {
-  if (allQuestions.length > 0) return;
+  if (allOriginalQuestions.length > 0 && allRandomModeQuestions.length > 0) return;
+  
+  // Carrega os dois arquivos em paralelo para mais eficiência
+  await Promise.all([
+    loadOriginalQuestions(),
+    loadRandomModeQuestions()
+  ]);
+}
+
+
+async function loadOriginalQuestions() {
+  if (allOriginalQuestions.length > 0) return;
   try {
     const response = await fetch("questions.json");
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -145,19 +162,51 @@ async function loadAllQuestions() {
     data.forEach(
       (q) => (q.options = q.options.map((opt, i) => `${String.fromCharCode(65 + i)}. ${opt}`))
     );
-    allQuestions = data;
-    console.log(`Loaded ${allQuestions.length} questions.`);
+    allOriginalQuestions = data;
+    console.log(`Loaded ${allOriginalQuestions.length} original questions.`);
   } catch (err) {
     console.error("Error loading questions.json:", err);
-    app.innerHTML = '<p style="color: red;">Failed to load exam questions. Please try reloading the page.</p>';
+    app.innerHTML = '<p style="color: red;">Failed to load original exam questions.</p>';
   }
+}
+
+async function loadRandomModeQuestions() {
+    if (allRandomModeQuestions.length > 0) return;
+    try {
+        const response = await fetch("questions_2.json");
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+
+        // Mapeamento de letras para índices (A=0, B=1, etc.)
+        const letterToIndex = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').reduce((acc, letter, index) => {
+            acc[letter] = index;
+            return acc;
+        }, {});
+
+        // Transforma cada questão do novo formato para o formato que a aplicação espera
+        allRandomModeQuestions = data.map(newQ => {
+            const correctIndices = newQ.answer.split('').map(letter => letterToIndex[letter]);
+            
+            return {
+                question: newQ.text,
+                options: Object.values(newQ.choices).map((opt, i) => `${String.fromCharCode(65 + i)}. ${opt}`),
+                correct: correctIndices,
+                topic: topicNameToKeyMap[newQ.topic.toLowerCase()] || 'platform_overview', // Tópico padrão
+                source_file: newQ.source, // Usa o campo 'source' como 'source_file'
+            };
+        });
+        console.log(`Loaded and transformed ${allRandomModeQuestions.length} questions for Random Mode.`);
+    } catch (err) {
+        console.error("Error loading questions_2.json:", err);
+        app.innerHTML = '<p style="color: red;">Failed to load random mode exam questions.</p>';
+    }
 }
 
 function displaySourceSelection() {
   const sourceListContainer = document.getElementById("source-list");
   if (!sourceListContainer) return;
 
-  const sources = [...new Set(allQuestions.map((q) => q.source_file))];
+  const sources = [...new Set(allOriginalQuestions.map((q) => q.source_file))];
   sources.sort();
 
   let buttonsHtml = sources.map(source => 
@@ -185,14 +234,16 @@ function getQuestionsByTopicDistribution(totalQuestions) {
 }
 
 function getRandomQuestions(totalQuestions, sourceFilter = "Random") {
-  let questionPool = allQuestions;
+  let questionPool;
 
-  if (sourceFilter && sourceFilter !== "Random") {
-    questionPool = allQuestions.filter((q) => q.source_file === sourceFilter);
+  if (sourceFilter && sourceFilter === "Random") {
+    questionPool = allRandomModeQuestions;
+  } else {
+    questionPool = allOriginalQuestions.filter((q) => q.source_file === sourceFilter);
   }
   
   const totalAvailable = questionPool.length;
-  const questionsToSelect = Math.min(totalQuestions, totalAvailable);
+  const questionsToSelect = (sourceFilter === 'Random') ? Math.min(totalQuestions, totalAvailable) : totalAvailable;
 
   if (sourceFilter !== 'Random') {
       return [...questionPool].sort(() => 0.5 - Math.random());
@@ -599,6 +650,6 @@ function generateErrorChart(topicResults) {
 
 
 document.addEventListener("DOMContentLoaded", async () => {
-  await loadAllQuestions();
+  await loadallOriginalQuestions();
   checkSession();
 });
